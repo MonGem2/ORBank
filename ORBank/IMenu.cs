@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ORBank
 {
-    interface Menu
+    interface IMenu
     {
 
     }

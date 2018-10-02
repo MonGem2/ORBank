@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="Bank_Singleton.cs" />
     <Compile Include="Main_Menu.cs" />
-    <Compile Include="Menu.cs" />
+    <Compile Include="IMenu.cs" />
     <Compile Include="Options_Menu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
