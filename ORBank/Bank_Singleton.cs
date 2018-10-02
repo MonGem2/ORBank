@@ -11,7 +11,9 @@ namespace ORBank
         private static Bank_Singleton instance;
 
         private Bank_Singleton()
-        { }
+        {
+            Main_Menu.Menu();
+        }
 
         public static Bank_Singleton getInstance()
         {
