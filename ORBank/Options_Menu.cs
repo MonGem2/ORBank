@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace ORBank
 {
-    class Program
+    class Options_Menu
     {
-        static void Main(string[] args)
-        {
-            Bank_Singleton bank = Bank_Singleton.getInstance();
-        }
     }
 }

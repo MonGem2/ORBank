@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bank_Singleton.cs" />
+    <Compile Include="Main_Menu.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="Options_Menu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
