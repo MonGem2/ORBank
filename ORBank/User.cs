@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.IO;
 
 
 namespace ORBank
 {
+    [Serializable]
     class User
     {
         private string Name_;
@@ -24,11 +26,11 @@ namespace ORBank
             set { SurName_ = value; }
         }
 
-        private Decimal Money_;
-        public Decimal Wallet
+        private Wallet Money_;
+        public Wallet wallet
         {
-            get { return Money_+65; }
-            set { Money_ = value-65; }
+            get { return Money_; }
+            set { Money_ = value; }
         }
 
         private string Login_;
@@ -45,8 +47,8 @@ namespace ORBank
             set { PassWord_ = value; }
         }
 
-        private int[] Card_Number_ = new int[16];
-        public int[] CardNum
+        private string Card_Number_;
+        public string CardNum
         {
             get { return Card_Number_; }
         }
@@ -68,34 +70,27 @@ namespace ORBank
 
         public User()
         {
-
-        }
-
-        delegate string Cursor(string x);
-        public void CreateUser()
-        {
-            Cursor SetCursor = (x) => { Console.SetCursorPosition((Console.WindowWidth - x.Length) / 2, Console.CursorTop); return x; }; 
-            Random rand = new Random();
-            string NewName = string.Empty;
-            string NewSurname = string.Empty;
-            string LogPattern = @"^[A-Za-z]{2,12}$";
-            Regex reg = new Regex(LogPattern);
-            while (!reg.IsMatch(NewName))
+            string Main_File = @"files\main_file.ob";
+            FileInfo file = new FileInfo(Main_File);
+            string[] str_file=null;
+            try
             {
-                Main_Menu.Print_Logotype_Fast();
-                Console.WriteLine(SetCursor("Input you real name:"));
-                NewName = Console.ReadLine();
+                str_file = File.ReadAllLines(Main_File);
             }
-            while (!reg.IsMatch(NewSurname))
+            catch { 
+            if (str_file==null||str_file.Length==0)
             {
-                Console.WriteLine(SetCursor("Input you real surname:"));
-                NewSurname = Console.ReadLine();
+                Worker.CreateUser();
+                //LoadUser();
             }
-
-            for (var i = 0; i < 16; i++)
-            {
-                Card_Number_[i] = rand.Next(9);
+                // else LoadUser();
             }
         }
+
+        public delegate string Cursor(string x);
+        public static Cursor SetCursorToCenter = (x) => { Console.SetCursorPosition((Console.WindowWidth - x.Length) / 2, Console.CursorTop); return x; };
+
+        
+           
     }
 }

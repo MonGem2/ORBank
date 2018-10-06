@@ -8,6 +8,7 @@ namespace ORBank
 {
     class Bank_Singleton
     {
+        
         private static Bank_Singleton instance;
 
         private Bank_Singleton()
