@@ -125,11 +125,9 @@ namespace ORBank
 
         public static void Menu()
         {
+            Console.Clear();
+            User user = null;
             Print_Logotype();
-            if (!File.Exists(@"\files\main_file.ob"))
-            {
-                User user = new User();
-            }
 
             List<string> variant = new List<string> { "Login", "Register" };
             foreach (var item in variant)
@@ -146,7 +144,11 @@ namespace ORBank
 
                 ConsoleKey key = Console.ReadKey(true).Key;
                     
-                if(key==ConsoleKey.W)
+                if(key==ConsoleKey.UpArrow)
+                    variant_--;
+                if (key == ConsoleKey.DownArrow)
+                    variant_++;
+                if (key == ConsoleKey.W)
                     variant_--;
                 if (key == ConsoleKey.S)
                     variant_++;
@@ -185,11 +187,17 @@ namespace ORBank
             }
             if (variant_ == 0)
             {
-
+                if (User.Login(user) == true)
+                {
+                    ORBank or = new ORBank();
+                    or.StartWork(user);
+                }
+                Menu();
             }
             else
             {
-                Worker.CreateUser();
+                while ((user = Worker.CreateUser()) == null){}
+                Menu();
             }
         }
     }

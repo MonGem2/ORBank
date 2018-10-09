@@ -9,7 +9,11 @@ namespace ORBank
 {
     class Worker : User
     {
-        public static void CreateUser()
+        public Worker()
+        {
+        }
+
+        public static User CreateUser()
         {
             Random rand = new Random();
 
@@ -27,26 +31,29 @@ namespace ORBank
             string PINPattern = @"^\d{4}$";
 
             Regex reg = new Regex(LogPattern);
-
             while (!reg.IsMatch(NewLogin))
             {
                 Console.Clear();
-                //Main_Menu.Print_Logotype_Fast();
+                Main_Menu.Print_Logotype_Fast();
                 Console.WriteLine(SetCursorToCenter("Input your new login:"));
                 NewLogin = Console.ReadLine();
+                if (NewLogin[0] == 'a' && NewLogin[1] == 'd' && NewLogin[2] == 'm' && NewLogin[3] == '\\')
+                {
+                    break;
+                }
             }
 
             while (!reg.IsMatch(NewPassword))
             {
                 Console.Clear();
-                //Main_Menu.Print_Logotype_Fast();
+                Main_Menu.Print_Logotype_Fast();
                 Console.WriteLine(SetCursorToCenter("Input your new login:\n") + NewLogin);
-                Console.WriteLine(SetCursorToCenter("Input your new Password(F2-show password):"));
+                Console.WriteLine(SetCursorToCenter("Input your new Password(space bar is automatically deleted):"));
 
                 char keych = ' ';
                
                 NewPassword = string.Empty;
-                while (keych != (char)13)
+                while (keych != (char)ConsoleKey.Enter)
                 {
                     keych = Console.ReadKey(true).KeyChar;
                     if (!Char.IsControl(keych)&&keych!=(char)ConsoleKey.Spacebar)
@@ -71,15 +78,16 @@ namespace ORBank
             while (!reg.IsMatch(NewName))
             {
                 Console.Clear();
-                //Main_Menu.Print_Logotype_Fast();
+                Main_Menu.Print_Logotype_Fast();
                 Console.WriteLine(SetCursorToCenter("Input your real name:"));
+
                 NewName = Console.ReadLine();
             }
 
             while (!reg.IsMatch(NewSurname))
             {
                 Console.Clear();
-                //Main_Menu.Print_Logotype_Fast();
+                Main_Menu.Print_Logotype_Fast();
                 Console.WriteLine(SetCursorToCenter("Input your real name:\n" + NewName));
                 Console.WriteLine(SetCursorToCenter("Input your real surname:"));
                 NewSurname = Console.ReadLine();
@@ -89,7 +97,7 @@ namespace ORBank
             while (!reg.IsMatch(NewPhone))
             {
                 Console.Clear();
-                //Main_Menu.Print_Logotype_Fast();
+                Main_Menu.Print_Logotype_Fast();
                 Console.WriteLine(SetCursorToCenter("Input your real name:\n" + NewName));
                 Console.WriteLine(SetCursorToCenter("Input your real surname:\n" + NewSurname));
                 Console.WriteLine(SetCursorToCenter("Input your Phone Number:"));
@@ -105,7 +113,7 @@ namespace ORBank
             while (!reg.IsMatch(NewPIN))
             {
                 Console.Clear();
-                //Main_Menu.Print_Logotype_Fast();
+                Main_Menu.Print_Logotype_Fast();
                 Console.WriteLine(SetCursorToCenter("Your card number:\n") + SetCursorToCenter(New_Card_Number));
                 Console.WriteLine(SetCursorToCenter("Your new PIN:"));
                 for (int i = 0; i < 4; i++)
@@ -113,10 +121,21 @@ namespace ORBank
                     NewPIN += rand.Next(9).ToString();
                 }
                 Console.WriteLine(SetCursorToCenter(NewPIN));
+                Console.ReadKey(true);
             }
 
-            WorkWithFiles.FillingOrCreateFilling_Main_File(NewLogin, NewPassword, NewName, NewPhone, NewSurname,
-                New_Card_Number, NewPIN);
+            try
+            {
+                Console.WriteLine(SetCursorToCenter("User added"));
+                User user = new User(NewName, NewSurname, NewPhone, NewPassword, NewLogin, NewPIN);
+                return user;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.ReadKey();
+                return null;
+            }
 
         }
     }

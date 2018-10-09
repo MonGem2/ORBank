@@ -13,7 +13,7 @@ namespace ORBank
 
         private Bank_Singleton()
         {
-            Main_Menu.Menu();
+            ORBank.Start();
         }
 
         public static Bank_Singleton getInstance()

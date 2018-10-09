@@ -2,95 +2,141 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Text.RegularExpressions;
 using System.IO;
-
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ORBank
 {
     [Serializable]
     class User
     {
-        private string Name_;
-        public string Name
-        {
-            get { return Name_; }
-            set { Name_ = value; }
-        }
+        public string Name { get; set; }
 
-        private string SurName_;
-        public string SurName
-        {
-            get { return SurName_; }
-            set { SurName_ = value; }
-        }
+        public string SurName { get; set; }
 
-        private Wallet Money_;
-        public Wallet wallet
-        {
-            get { return Money_; }
-            set { Money_ = value; }
-        }
+        public Wallet wallet { get; set; }
 
-        private string Login_;
-        private string LogIn
-        {
-            get { return Login_; }
-            set { Login_ = value; }
-        }
+        private string LogIn { get; set; }
 
-        private string PassWord_;
-        private string Password
-        {
-            get { return PassWord_; }
-            set { PassWord_ = value; }
-        }
+        private string Password { get; set; }
 
-        private string Card_Number_;
-        public string CardNum
-        {
-            get { return Card_Number_; }
-        }
+        public string CardNum { get; }
 
-        private string PIN_;
-        private string PINcode
-        {
-            get { return PIN_; }
-            set { PIN_ = value; }
-        }
+        private string PINcode { get; set; }
 
-        private string Phone_Number_;
-        public string Phone_Number
-        {
-            get { return Phone_Number_; }
-            set { Phone_Number_ = value; }
-        }
+        public string Phone_Number { get; set; }
 
+        internal Wallet Money_1 { get; set; }
 
         public User()
         {
-            string Main_File = @"files\main_file.ob";
-            FileInfo file = new FileInfo(Main_File);
-            string[] str_file=null;
-            try
+            
+        }
+
+        public void Save()
+        {
+            using (FileStream fileStream = new FileStream($@"files\users\{LogIn}.ob", FileMode.OpenOrCreate, FileAccess.Write))
             {
-                str_file = File.ReadAllLines(Main_File);
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fileStream, this);
             }
-            catch { 
-            if (str_file==null||str_file.Length==0)
-            {
-                Worker.CreateUser();
-                //LoadUser();
-            }
-                // else LoadUser();
-            }
+
+        }
+
+        public User(string NewName, string NewSurname, string NewPhone, string NewPassword, string NewLogin, string NewPIN)
+        {
+            Name = NewName;
+            SurName = NewSurname;
+            Phone_Number = NewPhone;
+            Password = NewPassword;
+            LogIn = NewLogin;
+            PINcode = NewPIN;
+            wallet = new Wallet(1000);
+            Save();
+        }
+
+            public bool IsPassTrue(string Pass)
+        {
+            if (Password == Pass)
+                return true;
+            return false;
         }
 
         public delegate string Cursor(string x);
         public static Cursor SetCursorToCenter = (x) => { Console.SetCursorPosition((Console.WindowWidth - x.Length) / 2, Console.CursorTop); return x; };
 
-        
-           
-    }
+        public static bool Login(User ThisUser)
+        {
+            
+            while (true)
+            {
+                Console.Clear();
+                Cursor SetCursor = (x) => { Console.SetCursorPosition((Console.WindowWidth - x.Length) / 2, Console.CursorTop); return x; };
+                Main_Menu.Print_Logotype_Fast();
+                Console.WriteLine(SetCursor("Enter your login:"));
+                string tempLogin = Console.ReadLine() + ".ob";
+                string tempPass;
+                Console.WriteLine(SetCursorToCenter("Input your Password(space bar is automatically deleted):"));
+
+                char keych = ' ';
+
+                tempPass = string.Empty;
+                while (keych != (char)ConsoleKey.Enter)
+                {
+                    keych = Console.ReadKey(true).KeyChar;
+                    if (!Char.IsControl(keych) && keych != (char)ConsoleKey.Spacebar)
+                    {
+                        tempPass += keych;
+                        Console.Write('*');
+                    }
+                    else if (keych == (char)ConsoleKey.Backspace && Console.CursorLeft > 0 && tempPass.Length != 0)
+                    {
+                        tempPass = tempPass.Remove(tempPass.Length - 1);
+                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                        Console.Write(" ");
+                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    }
+                }
+                Console.Write(SetCursor("Loading"));
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.Write(".");
+                    Thread.Sleep(100);
+                }
+                Console.WriteLine();
+
+                try
+                {
+                    FileStream fileStream = new FileStream($@"files\users\{tempLogin}", FileMode.Open, FileAccess.Read);
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    User item = (User)formatter.Deserialize(fileStream);
+                    fileStream.Close();
+                    if (item.IsPassTrue(tempPass))
+                    {
+                        ThisUser = item;
+                        Console.WriteLine("You authorized");
+                        Console.ReadKey();
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Uncorrect password");
+                        Console.ReadKey();
+                        return false;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("This account does not exist  :(");
+                    Console.ReadKey();
+
+                    return false;
+
+                }
+            }
+
+        }
+    };
 }

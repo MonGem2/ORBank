@@ -14,19 +14,17 @@ namespace ORBank
     class Wallet
     {
         DateTime dateTime;
+        public Decimal Moneys { get; private set; }
 
-        private Decimal Money;
-        public Decimal Moneys
+        public Wallet(Decimal Money)
         {
-            get { return Money; }
-            private set { Money = value; }
+            Moneys = Money;
         }
 
-        
         void Percent_Bonus()
         {
             dateTime = new DateTime();
-            dateTime=DateTime.Today;
+            dateTime = DateTime.Today;
             FileStream fs = new FileStream(@"files\date.ob", FileMode.OpenOrCreate, FileAccess.Read);
             
 
