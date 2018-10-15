@@ -4,45 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace ORBank
 {
     class Worker : User
     {
-        public Worker()
+        static string Login_Input(string Pattern)
         {
-        }
-
-        public static User CreateUser()
-        {
-            Random rand = new Random();
-
-            string NewName = string.Empty;
-            string NewSurname = string.Empty;
-            string NewPhone = "Number";
             string NewLogin = string.Empty;
-            string NewPassword = string.Empty;
-            string NewPIN = string.Empty;
-            string New_Card_Number = string.Empty;
-
-            string LogPattern = @"^[A-Za-z]\w{5,15}$";
-            string NamePattern = @"^[A-Z][a-z]{1,15}$";
-            string PhonePattern = @"^([+][0-9\s-\(\)]{6,25})*$";
-            string PINPattern = @"^\d{4}$";
-
-            Regex reg = new Regex(LogPattern);
+            Regex reg = new Regex(Pattern);
             while (!reg.IsMatch(NewLogin))
             {
                 Console.Clear();
                 Main_Menu.Print_Logotype_Fast();
                 Console.WriteLine(SetCursorToCenter("Input your new login:"));
+
                 NewLogin = Console.ReadLine();
                 if (NewLogin[0] == 'a' && NewLogin[1] == 'd' && NewLogin[2] == 'm' && NewLogin[3] == '\\')
                 {
                     break;
                 }
             }
+            return NewLogin;
+        }
 
+        static string Password_Input(string Pattern,string NewLogin)
+        {
+            string NewPassword = string.Empty;
+            Regex reg = new Regex(Pattern);
             while (!reg.IsMatch(NewPassword))
             {
                 Console.Clear();
@@ -51,30 +41,35 @@ namespace ORBank
                 Console.WriteLine(SetCursorToCenter("Input your new Password(space bar is automatically deleted):"));
 
                 char keych = ' ';
-               
+
                 NewPassword = string.Empty;
                 while (keych != (char)ConsoleKey.Enter)
                 {
                     keych = Console.ReadKey(true).KeyChar;
-                    if (!Char.IsControl(keych)&&keych!=(char)ConsoleKey.Spacebar)
+                    if (!Char.IsControl(keych) && keych != (char)ConsoleKey.Spacebar)
                     {
                         NewPassword += keych;
                         Console.Write('*');
                     }
-                    else if (keych == (char)ConsoleKey.Backspace && Console.CursorLeft > 0&& NewPassword.Length!=0)
+                    else if (keych == (char)ConsoleKey.Backspace && Console.CursorLeft > 0 && NewPassword.Length != 0)
                     {
-                        NewPassword=NewPassword.Remove(NewPassword.Length-1);
+                        NewPassword = NewPassword.Remove(NewPassword.Length - 1);
                         Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                         Console.Write(" ");
                         Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                     }
                 }
-                
-                
-                
-            }
 
-            reg = new Regex(NamePattern);
+
+
+            }
+            return NewPassword;
+        }
+
+        static string Name_Input(string Pattern)
+        {
+            string NewName = string.Empty;
+            Regex reg = new Regex(Pattern);
             while (!reg.IsMatch(NewName))
             {
                 Console.Clear();
@@ -83,7 +78,13 @@ namespace ORBank
 
                 NewName = Console.ReadLine();
             }
+            return NewName;
+        }
 
+        static string Surname_Input(string Pattern,string NewName)
+        {
+            string NewSurname = string.Empty;
+            Regex reg = new Regex(Pattern);
             while (!reg.IsMatch(NewSurname))
             {
                 Console.Clear();
@@ -92,8 +93,13 @@ namespace ORBank
                 Console.WriteLine(SetCursorToCenter("Input your real surname:"));
                 NewSurname = Console.ReadLine();
             }
+            return NewSurname;
+        }
 
-            reg = new Regex(PhonePattern);
+        static string Phone_Input(string Pattern, string NewName, string NewSurname)
+        {
+            string NewPhone = "Number";
+            Regex reg = new Regex(Pattern);
             while (!reg.IsMatch(NewPhone))
             {
                 Console.Clear();
@@ -103,34 +109,85 @@ namespace ORBank
                 Console.WriteLine(SetCursorToCenter("Input your Phone Number:"));
                 NewPhone = Console.ReadLine();
             }
+            return NewPhone;
+        }
 
-            for (var i = 0; i < 16; i++)
+        static string Card_Number_Generator()
+        {
+            int card_num_size = 16;
+            Random rand = new Random();
+            string New_Card_Number = "";
+            for (var i = 0; i < card_num_size; i++)
             {
                 New_Card_Number += rand.Next(9).ToString();
             }
+            Console.Write(SetCursorToCenter("Your card number:"));
+            Console.Write(SetCursorToCenter(New_Card_Number));
+            return New_Card_Number;
+        }
 
-            reg = new Regex(PINPattern);
-            while (!reg.IsMatch(NewPIN))
+        static string PIN_Generator()
+        {
+            string NewPIN = string.Empty;
+            Random rand = new Random();
+            Console.Clear();
+            Main_Menu.Print_Logotype_Fast();
+            for (int i = 0; i < 4; i++)
             {
-                Console.Clear();
-                Main_Menu.Print_Logotype_Fast();
-                Console.WriteLine(SetCursorToCenter("Your card number:\n") + SetCursorToCenter(New_Card_Number));
-                Console.WriteLine(SetCursorToCenter("Your new PIN:"));
-                for (int i = 0; i < 4; i++)
-                {
-                    NewPIN += rand.Next(9).ToString();
-                }
-                Console.WriteLine(SetCursorToCenter(NewPIN));
-                Console.ReadKey(true);
+                NewPIN += rand.Next(9).ToString();
             }
+            Console.WriteLine(SetCursorToCenter("Your new PIN:"));
+            Console.WriteLine(SetCursorToCenter(NewPIN));
+            return NewPIN;
+            
+        }
+
+
+        public static User CreateUser()
+        {
+            string NewName;
+            string NewSurname;
+            string NewPhone;
+            string NewLogin;
+            string NewPassword;
+            string NewPIN;
+            string New_Card_Number;
+
+            string LogPattern = @"^[A-Za-z]\w{5,15}$";
+            string NamePattern = @"^[A-Z][a-z]{1,15}$";
+            string PhonePattern = @"^([+][0-9\s-\(\)]{6,25})*$";
+
+
+            NewLogin = Login_Input(LogPattern);
+
+            if (File.Exists(@"files\users\" + NewLogin + ".ob"))
+            {
+                Console.WriteLine(SetCursorToCenter("This user has already been created"));
+                Console.ReadKey(true);
+                return null;
+            }
+
+            NewPassword = Password_Input(LogPattern, NewLogin);
+
+            NewName = Name_Input(NamePattern);
+
+            NewSurname = Surname_Input(NamePattern, NewName);
+
+            NewPhone = Phone_Input(PhonePattern, NewName, NewSurname);
+
+            New_Card_Number = Card_Number_Generator();
+
+            NewPIN = PIN_Generator();
+
+            Console.ReadKey(true);
 
             try
             {
                 Console.WriteLine(SetCursorToCenter("User added"));
-                User user = new User(NewName, NewSurname, NewPhone, NewPassword, NewLogin, NewPIN);
+                User user = new User(NewName, NewSurname, NewPhone, NewPassword, NewLogin, NewPIN,New_Card_Number);
                 return user;
             }
-            catch (Exception e)
+            catch (FileNotFoundException e)
             {
                 Console.WriteLine(e.Message);
                 Console.ReadKey();

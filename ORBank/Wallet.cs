@@ -14,11 +14,16 @@ namespace ORBank
     class Wallet
     {
         DateTime dateTime;
-        public Decimal Moneys { get; private set; }
+        public decimal Moneys { get; private set; }
 
-        public Wallet(Decimal Money)
+        public Wallet(decimal Money)
         {
             Moneys = Money;
+        }
+
+        public decimal Get_Wallet()
+        {
+            return Moneys;
         }
 
         void Percent_Bonus()
@@ -31,5 +36,9 @@ namespace ORBank
             fs.Close();
         }
 
+        public override string ToString()
+        {
+            return ((int)Moneys).ToString();
+        }
     }
 }
