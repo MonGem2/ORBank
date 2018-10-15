@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Admin.cs" />
     <Compile Include="Bank_Singleton.cs" />
+    <Compile Include="Deposit.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="Main_Menu.cs" />
     <Compile Include="MenuAbstract.cs" />

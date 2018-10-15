@@ -4,104 +4,114 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ORBank
 {
+    [Serializable]
     class ORBank
     {
-        User user;
-        Admin adm;
-        Dictionary<string, decimal> deposit;
+        [NonSerialized] User user;
+        Dictionary<string, Deposit> deposit = new Dictionary<string, Deposit>();
         public static void Start()
         {
             Main_Menu main_menu = new Main_Menu();
             main_menu.Menu();
         }
 
-        void Bank_Menu_User()
-        {
-
-            while (true)
-            {
-                Console.Clear();
-                Main_Menu.Print_Logotype_Fast();
-                int variant_ = Main_Menu.Variant(new List<string> { "View profile","Create deposit","Refill wallet",
-                    "Withdraw money","Change account","Sign Out"});
-                if (variant_ == 0)
-                {
-                    adm.ViewProfile();
-                }
-                if (variant_ == 4)
-                { }
-                if (variant_ == 5)
-                { }
-                if (variant_ == 6)
-                { }
-                if (variant_ == 7)
-                {
-                    adm.ChangeProfile();
-                }
-                if (variant_ == 8)
-                {
-                    return;
-                }
-            }
-        }
-
         public void StartWork(User NewUser)
         {
             user = NewUser;
-
-            Bank_Menu_User();
+            try
+            {
+                deposit[user.LogIn].UpDate();
+            }
+            catch { }
+                Bank_Menu();
+            
         }
 
-        void Bank_Menu_Adm()
+        void Bank_Menu()
         {
-            
             while (true)
             {
                 Console.Clear();
                 Main_Menu.Print_Logotype_Fast();
-                int variant_ = Main_Menu.Variant(new List<string> { "View profile" ,"Block user","Unblock user","Delete user",
-                "Create deposit","Refill wallet","Withdraw money","Change account","Sign Out"});
+                List<string> menu = new List<string> {"View profile" , "Create deposit","Take a deposit","Refill wallet","Withdraw money",
+                    "Change account","Sign Out"};
+               
+                    
+                    
+                if (user is Admin)
+                {
+                    menu.Add("Block user");
+                    menu.Add("Unblock user");
+                    menu.Add("Delete user");
+                    
+
+                }
+
+                int variant_ = Main_Menu.Variant(menu);
+
                 if (variant_ == 0)
                 {
-                    adm.ViewProfile();
+                    user.ViewProfile();
                 }
                 if (variant_ == 1)
                 {
-                    adm.Block_User();
+                    deposit.Add(user.LogIn,user.CreateDeposit());
+                    SaveDepos();
                 }
                 if (variant_ == 2)
                 {
-                    adm.Unblock_User();
+                    user.TakeDeposit(deposit[user.LogIn]);
                 }
                 if (variant_ == 3)
                 {
-                    adm.Delete_User();
+                    user.wallet = new Wallet(user.wallet.Moneys + 1000);
+                    user.Save();
                 }
                 if (variant_ == 4)
-                { }
-                if (variant_ == 5)
-                { }
-                if (variant_ == 6)
-                { }
-                if (variant_ == 7)
                 {
-                    adm.ChangeProfile();
+                    Console.WriteLine("We sorry, but you can`t withdraw money :(");
+                    Console.ReadKey(true);
                 }
-                if (variant_ == 8)
+                if (variant_ == 5)
+                {
+                    user.ChangeProfile();
+                }
+                if (variant_ == 6)
                 {
                     return;
                 }
+                if (variant_ == 7)
+                {
+                    Admin adm = (Admin)user;
+                    adm.Block_User();
+                }
+                if (variant_ == 8)
+                {
+                    Admin adm = (Admin)user;
+                    adm.Unblock_User();
+                }
+                if (variant_ == 9)
+                {
+                    Admin adm = (Admin)user;
+                    adm.Delete_User();
+                }
+
+
             }
         }
 
-        public void StartWork(Admin NewAdm)
+        public void SaveDepos()
         {
-            adm = NewAdm;
-
-            Bank_Menu_Adm();
+            using (FileStream fileStream = new FileStream($@"files\Bank\Deposits.ob", FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fileStream, this);
+            }
 
         }
     }

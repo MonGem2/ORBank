@@ -116,6 +116,16 @@ namespace ORBank
             return Surname;
         }
 
+        public static string Name_Input()
+        {
+            string Name;
+            Console.Clear();
+            Main_Menu.Print_Logotype_Fast();
+            Console.WriteLine(SetCursorToCenter("Input your name:"));
+            Name = Console.ReadLine();
+            return Name;
+        }
+
         public bool IsPINCorrect(string PIN)
         {
             if (PIN == PINcode)
@@ -242,12 +252,13 @@ namespace ORBank
             else Console.WriteLine("Incorrect password");
         }
 
-        private void ChangeSurname()
+        private void ChangeNameSurname()
         {
             if (IsPassTrue(Password_Input()))
             {
                 SurName = Surname_Input();
-                Console.WriteLine(SetCursorToCenter("Surname changed"));
+                Name = Name_Input();
+                Console.WriteLine(SetCursorToCenter("Name/Surname changed"));
                 Save();
             }
             else Console.WriteLine("Incorrect password");
@@ -267,8 +278,7 @@ namespace ORBank
 
         public void ChangeProfile()
         {
-            Main_Menu.Print_Logotype_Fast();
-            int variant_ = Main_Menu.Variant(new List<string> { "Change password", "Change phone", "Change surname",
+            int variant_ = Main_Menu.Variant(new List<string> { "Change password", "Change phone", "Change name/surname",
                 "Delete this account", "Back" });
             if (variant_ == 0)
             {
@@ -280,7 +290,7 @@ namespace ORBank
             }
             if (variant_ == 2)
             {
-                ChangeSurname();
+                ChangeNameSurname();
             }
             if (variant_ == 3)
             {
@@ -295,6 +305,39 @@ namespace ORBank
             {
                 return;
             }
+        }
+
+        public Deposit CreateDeposit()
+        {
+            double sum_;
+            while (true)
+            {
+                Console.WriteLine(SetCursorToCenter("Enter the deposit amount"));
+                string sum = Console.ReadLine();
+                try
+                {
+                    sum_ = Double.Parse(sum);
+                    if (wallet.Get_Wallet() < (decimal)sum_)
+                    {
+                        Console.WriteLine("There is not enough money on the balance sheet");
+                    }
+                    break;
+                    
+                }
+                catch
+                {
+                    Console.WriteLine("Incorrect input, try again");
+                    Console.ReadKey(true);
+                }
+            }
+            
+
+            return new Deposit(sum_);
+        }
+
+        public void TakeDeposit(Deposit depos)
+        {
+            wallet = new Wallet(wallet.Moneys + (decimal)depos.Get_Sum());
         }
     }
 }

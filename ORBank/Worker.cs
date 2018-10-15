@@ -18,7 +18,7 @@ namespace ORBank
             {
                 Console.Clear();
                 Main_Menu.Print_Logotype_Fast();
-                Console.WriteLine(SetCursorToCenter("Input your new login:"));
+                Console.WriteLine(SetCursorToCenter("Input your new login(letters and numbers):"));
 
                 NewLogin = Console.ReadLine();
                 if (NewLogin[0] == 'a' && NewLogin[1] == 'd' && NewLogin[2] == 'm' && NewLogin[3] == '\\')
@@ -37,8 +37,8 @@ namespace ORBank
             {
                 Console.Clear();
                 Main_Menu.Print_Logotype_Fast();
-                Console.WriteLine(SetCursorToCenter("Input your new login:\n") + NewLogin);
-                Console.WriteLine(SetCursorToCenter("Input your new Password(space bar is automatically deleted):"));
+                Console.WriteLine(SetCursorToCenter("Input your new login(letters and numbers):\n") + NewLogin);
+                Console.WriteLine(SetCursorToCenter("Input your new Password(letters and numbers)(space bar is automatically deleted):"));
 
                 char keych = ' ';
 
@@ -74,7 +74,7 @@ namespace ORBank
             {
                 Console.Clear();
                 Main_Menu.Print_Logotype_Fast();
-                Console.WriteLine(SetCursorToCenter("Input your real name:"));
+                Console.WriteLine(SetCursorToCenter("Input your real name(Capital letter):"));
 
                 NewName = Console.ReadLine();
             }
@@ -89,8 +89,8 @@ namespace ORBank
             {
                 Console.Clear();
                 Main_Menu.Print_Logotype_Fast();
-                Console.WriteLine(SetCursorToCenter("Input your real name:\n" + NewName));
-                Console.WriteLine(SetCursorToCenter("Input your real surname:"));
+                Console.WriteLine(SetCursorToCenter("Input your real name(Capital letter):\n" + NewName));
+                Console.WriteLine(SetCursorToCenter("Input your real surname(Capital letter):"));
                 NewSurname = Console.ReadLine();
             }
             return NewSurname;
@@ -104,9 +104,9 @@ namespace ORBank
             {
                 Console.Clear();
                 Main_Menu.Print_Logotype_Fast();
-                Console.WriteLine(SetCursorToCenter("Input your real name:\n" + NewName));
-                Console.WriteLine(SetCursorToCenter("Input your real surname:\n" + NewSurname));
-                Console.WriteLine(SetCursorToCenter("Input your Phone Number:"));
+                Console.WriteLine(SetCursorToCenter("Input your real name(Capital letter):\n" + NewName));
+                Console.WriteLine(SetCursorToCenter("Input your real surname(Capital letter):\n" + NewSurname));
+                Console.WriteLine(SetCursorToCenter("Input your Phone Number(+*******):"));
                 NewPhone = Console.ReadLine();
             }
             return NewPhone;
@@ -121,8 +121,6 @@ namespace ORBank
             {
                 New_Card_Number += rand.Next(9).ToString();
             }
-            Console.Write(SetCursorToCenter("Your card number:"));
-            Console.Write(SetCursorToCenter(New_Card_Number));
             return New_Card_Number;
         }
 
